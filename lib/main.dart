@@ -1,3 +1,4 @@
+import 'package:example/states.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_treeview/tree_view.dart';
@@ -190,6 +191,42 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    TreeViewTheme _treeViewTheme = TreeViewTheme(
+      expanderTheme: ExpanderThemeData(
+        type: _expanderType,
+        modifier: _expanderModifier,
+        position: _expanderPosition,
+        color: Colors.grey.shade800,
+        size: 20,
+      ),
+      labelStyle: TextStyle(
+        fontSize: 16,
+        letterSpacing: 0.3,
+      ),
+      parentLabelStyle: TextStyle(
+        fontSize: 16,
+        letterSpacing: 0.1,
+        fontWeight: FontWeight.w800,
+        color: Colors.blue.shade700,
+      ),
+      iconTheme: IconThemeData(
+        size: 18,
+        color: Colors.grey.shade800,
+      ),
+      colorScheme: Theme.of(context).brightness == Brightness.light
+          ? ColorScheme.light(
+              primary: Colors.blue.shade50,
+              onPrimary: Colors.grey.shade900,
+              background: Colors.transparent,
+              onBackground: Colors.black,
+            )
+          : ColorScheme.dark(
+              primary: Colors.black26,
+              onPrimary: Colors.white,
+              background: Colors.transparent,
+              onBackground: Colors.white70,
+            ),
+    );
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -234,47 +271,48 @@ class _MyHomePageState extends State<MyHomePage> {
                           _treeViewController.copyWith(selectedKey: key);
                     });
                   },
-                  theme: TreeViewTheme(
-                    expanderTheme: ExpanderThemeData(
-                      type: _expanderType,
-                      modifier: _expanderModifier,
-                      position: _expanderPosition,
-                      color: Colors.grey.shade800,
-                      size: 20,
-                    ),
-                    labelStyle: TextStyle(
-                      fontSize: 16,
-                      letterSpacing: 0.3,
-                    ),
-                    iconTheme: IconThemeData(
-                      size: 18,
-                      color: Colors.grey.shade800,
-                    ),
-                    colorScheme:
-                        Theme.of(context).brightness == Brightness.light
-                            ? ColorScheme.light(
-                                primary: Colors.blue.shade50,
-                                onPrimary: Colors.grey.shade900,
-                                background: Colors.transparent,
-                                onBackground: Colors.black,
-                              )
-                            : ColorScheme.dark(
-                                primary: Colors.black26,
-                                onPrimary: Colors.white,
-                                background: Colors.transparent,
-                                onBackground: Colors.white70,
-                              ),
-                  ),
+                  theme: _treeViewTheme,
                 ),
               ),
             ),
             Container(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.only(top: 20),
               alignment: Alignment.center,
               child: Text(_treeViewController.getNode(_selectedNode) == null
                   ? ''
                   : _treeViewController.getNode(_selectedNode).label),
             )
+          ],
+        ),
+      ),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: ButtonBar(
+          alignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            CupertinoButton(
+              child: Text('Node'),
+              onPressed: () {
+                setState(() {
+                  _treeViewController = _treeViewController.copyWith(
+                    children: _nodes,
+                  );
+                });
+              },
+            ),
+            CupertinoButton(
+              child: Text('JSON'),
+              onPressed: () {
+                setState(() {
+                  _treeViewController =
+                      _treeViewController.loadJSON(json: US_STATES_JSON);
+                });
+              },
+            ),
+            CupertinoButton(
+              child: Text('Edit'),
+              onPressed: () {},
+            ),
           ],
         ),
       ),

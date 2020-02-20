@@ -25,7 +25,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   #  flutter_treeview:
   #    path: ../flutter_treeview/
-  flutter_treeview: ^0.0.2+1
+  flutter_treeview: any
 
 dev_dependencies:
   flutter_test:
