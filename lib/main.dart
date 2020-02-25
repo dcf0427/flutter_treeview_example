@@ -232,57 +232,68 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         elevation: 0,
       ),
-      body: Container(
-        color: Colors.grey.shade200,
-        padding: EdgeInsets.all(20),
-        height: double.infinity,
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: 300,
-              child: Column(
-                children: <Widget>[
-                  _makeExpanderPosition(),
-                  _makeExpanderType(),
-                  _makeExpanderModifier(),
-                  _makeAllowParentSelect(),
-                  _makeSupportParentDoubleTap(),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: EdgeInsets.all(10),
-                child: TreeView(
-                  controller: _treeViewController,
-                  allowParentSelect: _allowParentSelect,
-                  supportParentDoubleTap: _supportParentDoubleTap,
-                  onExpansionChanged: (key, expanded) =>
-                      _expandNode(key, expanded),
-                  onNodeTap: (key) {
-                    debugPrint('Selected: $key');
-                    setState(() {
-                      _selectedNode = key;
-                      _treeViewController =
-                          _treeViewController.copyWith(selectedKey: key);
-                    });
-                  },
-                  theme: _treeViewTheme,
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: Container(
+          color: Colors.grey.shade200,
+          padding: EdgeInsets.all(20),
+          height: double.infinity,
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: 300,
+                child: Column(
+                  children: <Widget>[
+                    _makeExpanderPosition(),
+                    _makeExpanderType(),
+                    _makeExpanderModifier(),
+                    _makeAllowParentSelect(),
+                    _makeSupportParentDoubleTap(),
+                  ],
                 ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.only(top: 20),
-              alignment: Alignment.center,
-              child: Text(_treeViewController.getNode(_selectedNode) == null
-                  ? ''
-                  : _treeViewController.getNode(_selectedNode).label),
-            )
-          ],
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: EdgeInsets.all(10),
+                  child: TreeView(
+                    controller: _treeViewController,
+                    allowParentSelect: _allowParentSelect,
+                    supportParentDoubleTap: _supportParentDoubleTap,
+                    onExpansionChanged: (key, expanded) =>
+                        _expandNode(key, expanded),
+                    onNodeTap: (key) {
+                      debugPrint('Selected: $key');
+                      setState(() {
+                        _selectedNode = key;
+                        _treeViewController =
+                            _treeViewController.copyWith(selectedKey: key);
+                      });
+                    },
+                    theme: _treeViewTheme,
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  debugPrint('Close Keyboard');
+                  FocusScope.of(context).unfocus();
+                },
+                child: Container(
+                  padding: EdgeInsets.only(top: 20),
+                  alignment: Alignment.center,
+                  child: Text(_treeViewController.getNode(_selectedNode) == null
+                      ? ''
+                      : _treeViewController.getNode(_selectedNode).label),
+                ),
+              )
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: SafeArea(
@@ -310,8 +321,64 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             CupertinoButton(
+              child: Text('Toggle'),
+              onPressed: _treeViewController.selectedNode != null &&
+                      _treeViewController.selectedNode.isParent
+                  ? () {
+                      setState(() {
+                        _treeViewController = _treeViewController
+                            .withToggleNode(_treeViewController.selectedKey);
+                      });
+                    }
+                  : null,
+            ),
+            CupertinoButton(
               child: Text('Edit'),
-              onPressed: () {},
+              onPressed: () {
+                TextEditingController editingController = TextEditingController(
+                    text: _treeViewController.selectedNode.label);
+                showCupertinoDialog(
+                    context: context,
+                    builder: (context) {
+                      return CupertinoAlertDialog(
+                        title: Text('Edit Label'),
+                        content: Container(
+                          height: 80,
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.all(10),
+                          child: CupertinoTextField(
+                            controller: editingController,
+                            autofocus: true,
+                          ),
+                        ),
+                        actions: <Widget>[
+                          CupertinoDialogAction(
+                            child: Text('Cancel'),
+                            isDestructiveAction: true,
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
+                          CupertinoDialogAction(
+                            child: Text('Update'),
+                            isDefaultAction: true,
+                            onPressed: () {
+                              if (editingController.text.isNotEmpty) {
+                                setState(() {
+                                  Node _node = _treeViewController.selectedNode;
+                                  _treeViewController =
+                                      _treeViewController.withUpdateNode(
+                                          _treeViewController.selectedKey,
+                                          _node.copyWith(
+                                              label: editingController.text));
+                                });
+                                debugPrint(editingController.text);
+                              }
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    });
+              },
             ),
           ],
         ),
