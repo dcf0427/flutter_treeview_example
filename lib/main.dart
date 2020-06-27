@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'TreeView Example',
       home: MyHomePage(title: 'TreeView Example'),
+      theme: ThemeData(accentColor: Colors.deepPurple),
     );
   }
 }
@@ -29,6 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Node> _nodes;
   TreeViewController _treeViewController;
   bool docsOpen = true;
+  bool deepExpanded = true;
   final Map<ExpanderPosition, Widget> expansionPositionOptions = const {
     ExpanderPosition.start: Text('Start'),
     ExpanderPosition.end: Text('End'),
@@ -71,19 +73,34 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         children: [
           Node(
-              label: 'personal',
-              key: 'd3',
-              icon: NodeIcon.fromIconData(Icons.input),
-              children: [
-                Node(
+            label: 'personal',
+            key: 'd3',
+            icon: NodeIcon.fromIconData(Icons.input),
+            children: [
+              Node(
+                label: 'Poems.docx',
+                key: 'pd1',
+                icon: NodeIcon.fromIconData(Icons.insert_drive_file),
+              ),
+              Node(
+                label: 'Job Hunt',
+                key: 'jh1',
+                icon: NodeIcon.fromIconData(Icons.input),
+                children: [
+                  Node(
                     label: 'Resume.docx',
-                    key: 'pd1',
-                    icon: NodeIcon.fromIconData(Icons.insert_drive_file)),
-                Node(
+                    key: 'jh1a',
+                    icon: NodeIcon.fromIconData(Icons.insert_drive_file),
+                  ),
+                  Node(
                     label: 'Cover Letter.docx',
-                    key: 'pd2',
-                    icon: NodeIcon.fromIconData(Icons.insert_drive_file)),
-              ]),
+                    key: 'jh1b',
+                    icon: NodeIcon.fromIconData(Icons.insert_drive_file),
+                  ),
+                ],
+              ),
+            ],
+          ),
           Node(
             label: 'Inspection.docx',
             key: 'd1',
@@ -112,6 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
       children: _nodes,
       selectedKey: _selectedNode,
     );
+
     super.initState();
   }
 
@@ -243,14 +261,14 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             children: <Widget>[
               Container(
-                height: 300,
+                height: 160,
                 child: Column(
                   children: <Widget>[
                     _makeExpanderPosition(),
                     _makeExpanderType(),
                     _makeExpanderModifier(),
-                    _makeAllowParentSelect(),
-                    _makeSupportParentDoubleTap(),
+//                    _makeAllowParentSelect(),
+//                    _makeSupportParentDoubleTap(),
                   ],
                 ),
               ),
@@ -320,17 +338,36 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
             ),
+//            CupertinoButton(
+//              child: Text('Toggle'),
+//              onPressed: _treeViewController.selectedNode != null &&
+//                      _treeViewController.selectedNode.isParent
+//                  ? () {
+//                      setState(() {
+//                        _treeViewController = _treeViewController
+//                            .withToggleNode(_treeViewController.selectedKey);
+//                      });
+//                    }
+//                  : null,
+//            ),
             CupertinoButton(
-              child: Text('Toggle'),
-              onPressed: _treeViewController.selectedNode != null &&
-                      _treeViewController.selectedNode.isParent
-                  ? () {
-                      setState(() {
-                        _treeViewController = _treeViewController
-                            .withToggleNode(_treeViewController.selectedKey);
-                      });
-                    }
-                  : null,
+              child: Text('Deep'),
+              onPressed: () {
+                String deepKey = 'jh1b';
+                setState(() {
+                  if (deepExpanded == false) {
+                    List<Node> newdata =
+                        _treeViewController.expandToNode(deepKey);
+                    _treeViewController =
+                        _treeViewController.copyWith(children: newdata);
+                    deepExpanded = true;
+                  } else {
+                    _treeViewController =
+                        _treeViewController.withCollapseToNode(deepKey);
+                    deepExpanded = false;
+                  }
+                });
+              },
             ),
             CupertinoButton(
               child: Text('Edit'),
