@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'TreeView Example',
       home: MyHomePage(title: 'TreeView Example'),
-      theme: ThemeData(accentColor: Colors.deepPurple),
+      theme: ThemeData().copyWith(accentColor: Colors.deepPurple),
     );
   }
 }
@@ -124,6 +124,11 @@ class _MyHomePageState extends State<MyHomePage> {
           label: 'Demo.zip',
           key: 'demo',
           icon: NodeIcon.fromIconData(Icons.archive)),
+      Node(
+        label: 'empty folder',
+        key: 'empty',
+        parent: true,
+      ),
     ];
     _treeViewController = TreeViewController(
       children: _nodes,
@@ -211,12 +216,12 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     TreeViewTheme _treeViewTheme = TreeViewTheme(
       expanderTheme: ExpanderThemeData(
-        type: _expanderType,
-        modifier: _expanderModifier,
-        position: _expanderPosition,
-        color: Colors.grey.shade800,
-        size: 20,
-      ),
+          type: _expanderType,
+          modifier: _expanderModifier,
+          position: _expanderPosition,
+          // color: Colors.grey.shade800,
+          size: 20,
+          color: Colors.blue),
       labelStyle: TextStyle(
         fontSize: 16,
         letterSpacing: 0.3,
@@ -231,19 +236,7 @@ class _MyHomePageState extends State<MyHomePage> {
         size: 18,
         color: Colors.grey.shade800,
       ),
-      colorScheme: Theme.of(context).brightness == Brightness.light
-          ? ColorScheme.light(
-              primary: Colors.blue.shade50,
-              onPrimary: Colors.grey.shade900,
-              background: Colors.transparent,
-              onBackground: Colors.black,
-            )
-          : ColorScheme.dark(
-              primary: Colors.black26,
-              onPrimary: Colors.white,
-              background: Colors.transparent,
-              onBackground: Colors.white70,
-            ),
+      colorScheme: Theme.of(context).colorScheme,
     );
     return Scaffold(
       appBar: AppBar(
@@ -255,7 +248,6 @@ class _MyHomePageState extends State<MyHomePage> {
           FocusScope.of(context).requestFocus(FocusNode());
         },
         child: Container(
-          color: Colors.grey.shade200,
           padding: EdgeInsets.all(20),
           height: double.infinity,
           child: Column(
@@ -275,7 +267,6 @@ class _MyHomePageState extends State<MyHomePage> {
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   padding: EdgeInsets.all(10),
