@@ -1,7 +1,7 @@
 import 'package:example/states.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_treeview/tree_view.dart';
+import 'package:flutter_treeview/flutter_treeview.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,7 +12,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'TreeView Example',
       home: MyHomePage(title: 'TreeView Example'),
-      theme: ThemeData().copyWith(accentColor: Colors.deepPurple),
+      theme: ThemeData().copyWith(
+        accentColor: Colors.deepPurple,
+        hoverColor: Colors.red.shade100,
+        colorScheme: ThemeData().colorScheme.copyWith(primary: Colors.red),
+      ),
     );
   }
 }
@@ -66,36 +70,32 @@ class _MyHomePageState extends State<MyHomePage> {
         label: 'documents',
         key: 'docs',
         expanded: docsOpen,
-        icon: NodeIcon(
-          codePoint:
-              docsOpen ? Icons.folder_open.codePoint : Icons.folder.codePoint,
-          color: "blue",
-        ),
+        icon: docsOpen ? Icons.folder_open : Icons.folder,
         children: [
           Node(
             label: 'personal',
             key: 'd3',
-            icon: NodeIcon.fromIconData(Icons.input),
+            icon: Icons.input,
             children: [
               Node(
                 label: 'Poems.docx',
                 key: 'pd1',
-                icon: NodeIcon.fromIconData(Icons.insert_drive_file),
+                icon: Icons.insert_drive_file,
               ),
               Node(
                 label: 'Job Hunt',
                 key: 'jh1',
-                icon: NodeIcon.fromIconData(Icons.input),
+                icon: Icons.input,
                 children: [
                   Node(
                     label: 'Resume.docx',
                     key: 'jh1a',
-                    icon: NodeIcon.fromIconData(Icons.insert_drive_file),
+                    icon: Icons.insert_drive_file,
                   ),
                   Node(
                     label: 'Cover Letter.docx',
                     key: 'jh1b',
-                    icon: NodeIcon.fromIconData(Icons.insert_drive_file),
+                    icon: Icons.insert_drive_file,
                   ),
                 ],
               ),
@@ -104,26 +104,20 @@ class _MyHomePageState extends State<MyHomePage> {
           Node(
             label: 'Inspection.docx',
             key: 'd1',
-//          icon: NodeIcon.fromIconData(Icons.insert_drive_file),
+//          icon: Icons.insert_drive_file),
           ),
-          Node(
-              label: 'Invoice.docx',
-              key: 'd2',
-              icon: NodeIcon.fromIconData(Icons.insert_drive_file)),
+          Node(label: 'Invoice.docx', key: 'd2', icon: Icons.insert_drive_file),
         ],
       ),
       Node(
           label: 'MeetingReport.xls',
           key: 'mrxls',
-          icon: NodeIcon.fromIconData(Icons.insert_drive_file)),
+          icon: Icons.insert_drive_file),
       Node(
           label: 'MeetingReport.pdf',
           key: 'mrpdf',
-          icon: NodeIcon.fromIconData(Icons.insert_drive_file)),
-      Node(
-          label: 'Demo.zip',
-          key: 'demo',
-          icon: NodeIcon.fromIconData(Icons.archive)),
+          icon: Icons.insert_drive_file),
+      Node(label: 'Demo.zip', key: 'demo', icon: Icons.archive),
       Node(
         label: 'empty folder',
         key: 'empty',
@@ -422,16 +416,11 @@ class _MyHomePageState extends State<MyHomePage> {
       List<Node> updated;
       if (key == 'docs') {
         updated = _treeViewController.updateNode(
-          key,
-          node.copyWith(
+            key,
+            node.copyWith(
               expanded: expanded,
-              icon: NodeIcon(
-                codePoint: expanded
-                    ? Icons.folder_open.codePoint
-                    : Icons.folder.codePoint,
-                color: expanded ? "blue600" : "grey700",
-              )),
-        );
+              icon: expanded ? Icons.folder_open : Icons.folder,
+            ));
       } else {
         updated = _treeViewController.updateNode(
             key, node.copyWith(expanded: expanded));
