@@ -39,7 +39,8 @@ class _MyHomePageState extends State<MyHomePage> {
     ExpanderPosition.start: Text('Start'),
     ExpanderPosition.end: Text('End'),
   };
-  final Map<ExpanderType, Widget> expansionTypeOptions = const {
+  final Map<ExpanderType, Widget> expansionTypeOptions = {
+    ExpanderType.none: Container(),
     ExpanderType.caret: Icon(
       Icons.arrow_drop_down,
       size: 28,
@@ -76,6 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
             label: 'personal',
             key: 'd3',
             icon: Icons.input,
+            iconColor: Colors.red,
             children: [
               Node(
                 label: 'Poems.docx',
@@ -116,6 +118,8 @@ class _MyHomePageState extends State<MyHomePage> {
       Node(
           label: 'MeetingReport.pdf',
           key: 'mrpdf',
+          iconColor: Colors.green.shade300,
+          selectedIconColor: Colors.white,
           icon: Icons.insert_drive_file),
       Node(label: 'Demo.zip', key: 'demo', icon: Icons.archive),
       Node(
